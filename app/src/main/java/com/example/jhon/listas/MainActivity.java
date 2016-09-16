@@ -2,6 +2,7 @@ package com.example.jhon.listas;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.jhon.listas.Adapter.ListPostresAdapter;
 import com.example.jhon.listas.Models.Postres;
+import com.example.jhon.listas.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         postres3.setPrecio("5000");
         postres3.setImgUrl("http://laestrella.com.pa/media/news/image/158996_800x600_crop_55ce26f1eda91.jpg");
         data.add(postres3);
+
+        Util.getData().addAll(data);
         //endregion
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Postres");
@@ -75,6 +79,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Toast.makeText(MainActivity.this, data.get(i).getName() , Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this,ConfirmarCompraActivity.class);
+        intent.putExtra("index",i);
+        startActivity(intent);
     }
 
     @Override
@@ -107,18 +114,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
             case R.id.compras_menu:
                 Toast.makeText(MainActivity.this, "Presiono menu", Toast.LENGTH_SHORT).show();
-                final ProgressDialog progress = new ProgressDialog(this);
-                progress.setTitle("Atencion");
-                progress.setMessage("Estamos procesando su compra de postres");
-                progress.setIndeterminate(true);
-                progress.setCancelable(false);
-                progress.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancelar", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        progress.dismiss();
-                    }
-                });
-                progress.show();
+                Intent intent = new Intent(this,ConfirmarCompraActivity.class);
+                startActivity(intent);
                 break;
             case R.id.info_menu:
                 Toast.makeText(MainActivity.this, "Presiono info", Toast.LENGTH_SHORT).show();
