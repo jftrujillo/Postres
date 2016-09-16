@@ -1,7 +1,13 @@
 package com.example.jhon.listas;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -18,12 +24,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     ListView list;
     List<Postres> data;
     ListPostresAdapter adapter;
+    Toolbar toolbar;
+    AlertDialog alert;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         list = (ListView) findViewById(R.id.list);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         data = new ArrayList<>();
         //region setData
         Postres postres = new Postres();
@@ -54,15 +64,66 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         postres3.setImgUrl("http://laestrella.com.pa/media/news/image/158996_800x600_crop_55ce26f1eda91.jpg");
         data.add(postres3);
         //endregion
-
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Postres");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         adapter = new ListPostresAdapter(data,this);
         list.setAdapter(adapter);
         list.setOnItemClickListener(this);
-
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Toast.makeText(MainActivity.this, data.get(i).getName() , Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main_activity,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+
+                //region Alert de salir
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Atencion");
+                builder.setMessage("Esta seguro que quiere salir de la aplicacion");
+                builder.setCancelable(true);
+                builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        onBackPressed();
+                    }
+                });
+                builder.setNegativeButton("No",null);
+                alert = builder.create();
+                alert.show();
+                //endregion
+
+                break;
+            case R.id.compras_menu:
+                Toast.makeText(MainActivity.this, "Presiono menu", Toast.LENGTH_SHORT).show();
+                final ProgressDialog progress = new ProgressDialog(this);
+                progress.setTitle("Atencion");
+                progress.setMessage("Estamos procesando su compra de postres");
+                progress.setIndeterminate(true);
+                progress.setCancelable(false);
+                progress.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        progress.dismiss();
+                    }
+                });
+                progress.show();
+                break;
+            case R.id.info_menu:
+                Toast.makeText(MainActivity.this, "Presiono info", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return true;
     }
 }
